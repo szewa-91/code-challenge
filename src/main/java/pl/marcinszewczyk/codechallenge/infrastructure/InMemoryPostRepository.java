@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class InMemoryPostRepository implements PostRepository {
-    Collection<Post> storage = new ArrayList<>();
+    final Collection<Post> storage = new ArrayList<>();
 
     @Override
     public Collection<Post> getByAuthor(String userName) {
@@ -21,5 +21,9 @@ public class InMemoryPostRepository implements PostRepository {
     public Post save(Post post) {
         storage.add(post);
         return post;
+    }
+
+    public void clear() {
+        storage.clear();
     }
 }

@@ -1,12 +1,19 @@
 package pl.marcinszewczyk.codechallenge.content;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Post {
-    private final String message;
-    private final String author;
-    private final LocalDateTime created;
+    private String message;
+    private String author;
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime created;
+
+    public Post() {
+    }
 
     public Post(String message, String author) {
         this.message = message;

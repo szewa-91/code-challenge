@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Component
 public class InMemoryUserRepository implements UserRepository {
-    Collection<User> storage = new ArrayList<>();
+    final Collection<User> storage = new ArrayList<>();
 
     @Override
     public Optional<User> getUserByName(String name) {
@@ -21,5 +21,9 @@ public class InMemoryUserRepository implements UserRepository {
     public User save(User post) {
         storage.add(post);
         return post;
+    }
+
+    public void clear() {
+        storage.clear();
     }
 }

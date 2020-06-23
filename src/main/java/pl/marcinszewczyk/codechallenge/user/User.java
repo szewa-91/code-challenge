@@ -9,9 +9,9 @@ import java.util.Set;
 import static java.util.Collections.emptySet;
 
 public class User {
-    private String name;
-    private LocalDateTime since;
-    private Set<User> followed;
+    private final String name;
+    private final LocalDateTime since;
+    private final Set<User> followed;
 
     public User(String name) {
         this.name = name;
