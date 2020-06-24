@@ -24,7 +24,7 @@ under URL:
 
 http://localhost:8080/swagger-ui.html
 
-### Specifying an active user
+### Specifying active user
 
 For each request, you can specify the user on behalf of who you execute it. Just add a query param `activeUser`. 
 For example the request:
@@ -44,19 +44,19 @@ Body of request should be a content of message (maximum length is 140 characters
 
 Returns ``201 CREATED`` for success or ``400 BAD_REQUEST`` if a content is too long or in bad format. 
 
-This endpoint expects that you specify an active user (Refer to **Specifying user** section). The active user will be
+This endpoint expects that you specify an active user (Refer to **Specifying active user** section). The active user will be
 created if doesn't exist.
 
 ```http
 POST /users/{name of user to follow}/follow
 ```
 
-This endpoint attempt to add a user specified in URL to list of followed authors. 
-The author of a message will be a current user specified by the query param.
+This endpoint attempt to add a user specified in URL to list of followed authors of an active user. 
+The following user will be a current user specified by the query param.
 
 Returns ``200 OK`` for success or ``404 NOT_FOUND`` if a user you try to follow doesn't exist. 
 
-This endpoint expects that you specify an active user (Refer to **Specifying user** section). The active user will be
+This endpoint expects that you specify an active user (Refer to **Specifying active user** section). The active user will be
 created if doesn't exist.
 
 ```http
