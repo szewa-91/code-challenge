@@ -15,6 +15,9 @@ import pl.marcinszewczyk.codechallenge.infrastructure.InMemoryPostRepository;
 import pl.marcinszewczyk.codechallenge.infrastructure.InMemoryUserRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -92,6 +95,18 @@ public class AcceptanceTests {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    public void shouldAnswerWithBadRequestIfTheMessageIsTooLong() throws Exception {
+        request().asAUser("user").postMessage(stringOfLength(141))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldAnswerWithBadRequestIfTheMessageIsEmpty() throws Exception {
+        request().asAUser("user").postMessage("")
+                .andExpect(status().isBadRequest());
+    }
+
     @AfterEach
     public void setUp() {
         userRepository.clear();
@@ -105,5 +120,9 @@ public class AcceptanceTests {
 
     private AcceptanceTestRequestBuilder request() {
         return requestbuilder(mockMvc);
+    }
+
+    private static String stringOfLength(int chars) {
+        return IntStream.range(0, chars).mapToObj(i -> "a").collect(Collectors.joining());
     }
 }
