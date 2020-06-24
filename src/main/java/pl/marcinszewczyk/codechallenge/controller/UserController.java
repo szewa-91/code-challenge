@@ -15,7 +15,7 @@ public class UserController {
     }
 
     @PostMapping("/users/{userToFollow}/follow")
-    public void follow(@RequestParam String currentUser, @PathVariable String userToFollow) {
-        userService.follow(currentUser, userToFollow);
+    public void follow(@RequestParam String activeUser, @PathVariable String userToFollow) {
+        userService.follow(activeUser, userToFollow);
     }
 }

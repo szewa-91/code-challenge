@@ -14,12 +14,12 @@ public class UserService {
 
     public void follow(String followingUserName, String followedUserName) {
         User followedUser = findUserOrThrowException(followedUserName);
-        User followingUser = createUserIfDoesNotExist(followingUserName);
+        User followingUser = findOrCreateUser(followingUserName);
 
         followingUser.follow(followedUser);
     }
 
-    public User createUserIfDoesNotExist(String name) {
+    public User findOrCreateUser(String name) {
         return findUser(name).orElseGet(() -> {
             User newUser = new User(name);
             userRepository.save(newUser);

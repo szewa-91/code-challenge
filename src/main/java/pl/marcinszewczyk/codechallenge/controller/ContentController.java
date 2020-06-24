@@ -1,9 +1,11 @@
 package pl.marcinszewczyk.codechallenge.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pl.marcinszewczyk.codechallenge.content.ContentService;
 import pl.marcinszewczyk.codechallenge.content.Post;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -25,8 +27,9 @@ public class ContentController {
     }
 
     @PostMapping("/post")
-    public void post(@RequestParam String currentUser, @RequestBody String message) {
-        contentService.post(currentUser, message);
+    @ResponseStatus(HttpStatus.CREATED)
+    public void post(@RequestParam String activeUser, @RequestBody String message, HttpServletResponse response) {
+        contentService.post(activeUser, message);
     }
 
 }

@@ -1,12 +1,9 @@
 package pl.marcinszewczyk.codechallenge.user;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-
-import static java.util.Collections.emptySet;
 
 public class User {
     private final String name;

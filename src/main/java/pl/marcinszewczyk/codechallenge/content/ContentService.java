@@ -6,6 +6,7 @@ import pl.marcinszewczyk.codechallenge.user.UserNotFoundException;
 import pl.marcinszewczyk.codechallenge.user.UserService;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -23,7 +24,7 @@ public class ContentService {
     }
 
     public void post(String userName, String message) {
-        userService.createUserIfDoesNotExist(userName);
+        userService.findOrCreateUser(userName);
         postRepository.save(new Post(message, userName));
     }
 
@@ -31,7 +32,7 @@ public class ContentService {
         return getNamesOfFollowedUsers(userName)
                 .map(this::getPostsByAuthor)
                 .flatMap(Collection::stream)
-                .sorted(comparing(Post::getCreated).reversed())
+                .sorted(byCreateTimeReversed())
                 .collect(Collectors.toList());
     }
 
@@ -43,7 +44,7 @@ public class ContentService {
 
     public List<Post> getPostsByAuthor(String userName) {
         return postRepository.getByAuthor(userName).stream()
-                .sorted(comparing(Post::getCreated).reversed())
+                .sorted(byCreateTimeReversed())
                 .collect(Collectors.toList());
     }
 
@@ -55,5 +56,9 @@ public class ContentService {
 
     private User getUserOrThrowException(String userName) {
         return userService.findUser(userName).orElseThrow(() -> new UserNotFoundException(userName));
+    }
+
+    private static Comparator<Post> byCreateTimeReversed() {
+        return comparing(Post::getCreated).reversed();
     }
 }

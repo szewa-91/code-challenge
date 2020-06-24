@@ -37,17 +37,7 @@ class UserServiceTest {
     }
 
     @Test
-    public void shouldThrowExceptionWhenTriesToFollowAsNonexistentUser() {
-        when(userService.findUser(TEST_USER_NAME)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> userService.follow(TEST_USER_NAME, FOLLOWED_USER_NAME))
-                .isInstanceOf(UserNotFoundException.class)
-                .hasMessage("User " + TEST_USER_NAME + " doesn't exist");
-    }
-
-    @Test
     public void shouldThrowExceptionWhenTriesToFollowNonexistentUser() {
-        when(userService.findUser(TEST_USER_NAME)).thenReturn(Optional.of(user(TEST_USER_NAME)));
         when(userService.findUser(FOLLOWED_USER_NAME)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> userService.follow(TEST_USER_NAME, FOLLOWED_USER_NAME))

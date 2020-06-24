@@ -3,6 +3,7 @@ package pl.marcinszewczyk.codechallenge.acceptance;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static pl.marcinszewczyk.codechallenge.acceptance.RequestBuilder.request;
+import static pl.marcinszewczyk.codechallenge.acceptance.AcceptanceTestRequestBuilder.requestbuilder;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -30,19 +31,13 @@ public class AcceptanceTests {
     @Autowired
     InMemoryPostRepository postRepository;
 
-    @BeforeEach
-    public void setUp() {
-        userRepository.clear();
-        postRepository.clear();
-    }
-
     @Test
     public void shouldDisplayWallOfAUser() throws Exception {
-        request(mockMvc).asAUser("user1").postMessage("Message1");
-        request(mockMvc).asAUser("user2").postMessage("Message2");
-        request(mockMvc).asAUser("user1").postMessage("Message3");
+        request().asAUser("user1").postMessage("Message1");
+        request().asAUser("user2").postMessage("Message2");
+        request().asAUser("user1").postMessage("Message3");
 
-        String user1Wall = request(mockMvc).getWallOfUser("user1")
+        String user1Wall = request().getWallOfUser("user1")
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
@@ -55,18 +50,18 @@ public class AcceptanceTests {
 
     @Test
     public void shouldDisplayTimelineOfFollowedUsers() throws Exception {
-        request(mockMvc).asAUser("user1").postMessage("Message1");
-        request(mockMvc).asAUser("user2").postMessage("Message2");
-        request(mockMvc).asAUser("user1").postMessage("Message3");
-        request(mockMvc).asAUser("user3").postMessage("Message4");
+        request().asAUser("user1").postMessage("Message1");
+        request().asAUser("user2").postMessage("Message2");
+        request().asAUser("user1").postMessage("Message3");
+        request().asAUser("user3").postMessage("Message4");
 
-        request(mockMvc).asAUser("follower").postMessage("Not for timeline");
-        request(mockMvc).asAUser("follower").followUser("user1");
-        request(mockMvc).asAUser("follower").followUser("user2");
-        request(mockMvc).asAUser("follower").followUser("user3");
+        request().asAUser("follower").postMessage("Not for timeline");
+        request().asAUser("follower").followUser("user1");
+        request().asAUser("follower").followUser("user2");
+        request().asAUser("follower").followUser("user3");
 
 
-        String user1Wall = request(mockMvc).getTimelineOfUser("follower")
+        String user1Wall = request().getTimelineOfUser("follower")
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
@@ -81,23 +76,34 @@ public class AcceptanceTests {
 
     @Test
     public void shouldAnswerWithNotFoundIfNoUserAndRequestingWall() throws Exception {
-        request(mockMvc).getWallOfUser("user")
+        request().getWallOfUser("user")
                 .andExpect(status().isNotFound());
     }
 
     @Test
     public void shouldAnswerWithNotFoundIfNoUserAndRequestingTimeLine() throws Exception {
-        request(mockMvc).getTimelineOfUser("user")
+        request().getTimelineOfUser("user")
                 .andExpect(status().isNotFound());
     }
 
     @Test
     public void shouldAnswerWithNotFoundIfTryingToFollowUserThatDoesNotExists() throws Exception {
-        request(mockMvc).asAUser("follower").followUser("user")
+        request().asAUser("follower").followUser("user")
                 .andExpect(status().isNotFound());
     }
 
+    @AfterEach
+    public void setUp() {
+        userRepository.clear();
+        postRepository.clear();
+    }
+
     private List<Post> deserialize(String response) throws JsonProcessingException {
-        return new ObjectMapper().readValue(response, new TypeReference<List<Post>>() {});
+        return new ObjectMapper().readValue(response, new TypeReference<>() {
+        });
+    }
+
+    private AcceptanceTestRequestBuilder request() {
+        return requestbuilder(mockMvc);
     }
 }

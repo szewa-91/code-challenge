@@ -18,9 +18,8 @@ public class InMemoryPostRepository implements PostRepository {
     }
 
     @Override
-    public Post save(Post post) {
+    public void save(Post post) {
         storage.add(post);
-        return post;
     }
 
     public void clear() {
